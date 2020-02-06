@@ -100,16 +100,16 @@ class _SemanalState extends State<Semanal> {
                         default:
                         //Realiza calculos altes de colocar na UI
                           _abertura = double.parse(
-                              snapshot.data["Time Series (Daily)"]["2019-12-06"]
+                              snapshot.data["Weekly Time Series"]["2019-12-06"]
                               ["1. open"]);
                           _alta = double.parse(
-                              snapshot.data["Time Series (Daily)"]["2019-12-06"]
+                              snapshot.data["Weekly Time Series"]["2019-12-06"]
                               ["2. high"]);
                           _baixa = double.parse(
-                              snapshot.data["Time Series (Daily)"]["2019-12-06"]
+                              snapshot.data["Weekly Time Series"]["2019-12-06"]
                               ["3. low"]);
                           _fechamento = double.parse(
-                              snapshot.data["Time Series (Daily)"]["2019-12-06"]
+                              snapshot.data["Weekly Time Series"]["2019-12-06"]
                               ["4. close"]);
                           _variacao = _getVariacao(_abertura, _fechamento);
 

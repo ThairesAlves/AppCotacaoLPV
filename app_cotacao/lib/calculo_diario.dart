@@ -49,64 +49,62 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     String dataFormatada = new DateFormat("yyyy-MM-dd").format(_dateTime);
     return new Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text("Cotação"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.calendar_today,
-            ),
-            onPressed: () {
-              showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2022))
-                  .then((date) {
-                setState(() {
-                  _dateTime = date;
-                  print(_dateTime);
-                  print(dataFormatada);
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          title: Text("Cotação"),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.calendar_today,
+              ),
+              onPressed: () {
+                showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2022))
+                    .then((date) {
+                  setState(() {
+                    _dateTime = date;
+                    print(_dateTime);
+                    print(dataFormatada);
+                  });
+                  // dataFormatada = _dateTime.toString();
+                  // print(dataFormatada);
                 });
-                // dataFormatada = _dateTime.toString();
-                // print(dataFormatada);
-              });
-            },
-          ),
-        ],
-      ),
-      body: new Stack(
-        children: <Widget>[
+              },
+            ),
+          ],
+        ),
+        body: new Stack(children: <Widget>[
           Image.asset(
             "lib/images/market.jpg",
             fit: BoxFit.cover,
             height: 1000.0,
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(10),
-                child: TextField(
-                  textCapitalization: TextCapitalization.sentences,
-                  decoration: InputDecoration(
-                      labelText: 'Pesquise Aqui!',
-                      labelStyle: TextStyle(color: Colors.white),
-                      border: OutlineInputBorder()),
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                  onSubmitted: (text) {
-                    setState(() {
-                      search = text;
-                    });
-                  },
-                ),
+          Column(mainAxisAlignment: MainAxisAlignment.center, children: <
+              Widget>[
+            Padding(
+              padding: EdgeInsets.all(10),
+              child: TextField(
+                textCapitalization: TextCapitalization.sentences,
+                decoration: InputDecoration(
+                    labelText: 'Pesquise Aqui!',
+                    labelStyle: TextStyle(color: Colors.white),
+                    border: OutlineInputBorder()),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+                onSubmitted: (text) {
+                  setState(() {
+                    search = text;
+                  });
+                },
               ),
-              Expanded(
+            ),
+            Expanded(
                 child: FutureBuilder(
                     future: _getStockPrice(),
                     builder: (context, snapshot) {
@@ -138,50 +136,51 @@ class _HomeState extends State<Home> {
                               snapshot.data["Time Series (Daily)"]
                                   [dataFormatada.toString()]["4. close"]);
                           _variacao = _getVariacao(_abertura, _fechamento);
-
-                          return Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(_variacao.toStringAsPrecision(3) + "%",
-                                    style: TextStyle(
-                                        fontSize: 70,
-                                        fontWeight: FontWeight.bold,
-                                        color: _variacao > 0
-                                            ? Colors.green
-                                            : Colors.red)),
-                                Text("Ativo: " + busca(search),
-                                    style: TextStyle(
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white)),
-                                Text("Abertura: R\$" + _abertura.toString(),
-                                    style: TextStyle(
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white)),
-                                Text("Alta: R\$" + _alta.toString(),
-                                    style: TextStyle(
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white)),
-                                Text("Baixa: R\$" + _baixa.toString(),
-                                    style: TextStyle(
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white)),
-                                Text("Fechamento: R\$" + _fechamento.toString(),
-                                    style: TextStyle(
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white))
-                              ]);
+                          if (snapshot.hasData) {
+                            return Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(_variacao.toStringAsPrecision(3) + "%",
+                                      style: TextStyle(
+                                          fontSize: 70,
+                                          fontWeight: FontWeight.bold,
+                                          color: _variacao > 0
+                                              ? Colors.green
+                                              : Colors.red)),
+                                  Text("Ativo: " + busca(search),
+                                      style: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white)),
+                                  Text("Abertura: R\$" + _abertura.toString(),
+                                      style: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white)),
+                                  Text("Alta: R\$" + _alta.toString(),
+                                      style: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white)),
+                                  Text("Baixa: R\$" + _baixa.toString(),
+                                      style: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white)),
+                                  Text(
+                                      "Fechamento: R\$" +
+                                          _fechamento.toString(),
+                                      style: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white))
+                                ]);
+                          } else {
+                            Container();
+                          }
                       }
-                    }),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
+                    }))
+          ])
+        ]));
   }
 }

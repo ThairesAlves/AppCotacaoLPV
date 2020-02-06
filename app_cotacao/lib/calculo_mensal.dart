@@ -21,11 +21,11 @@ class _MensalState extends State<Mensal> {
     if (_search == null || _search.isEmpty)
 //Por padrão busca índice bovespa: ^BVSP
       response = await http.get(
-          "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=^BVSP&apikey=DS2B6XU5GXEW1VEV");
+          "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=^BVSP&apikey=DS2B6XU5GXEW1VEV");
     else
 //Retorna o valor da ação a ser buscada, essa ação estará armazenada na variável _search
       response = await http.get(
-          "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=$_search.SAO&apikey=DS2B6XU5GXEW1VEV");
+          "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=$_search.SAO&apikey=DS2B6XU5GXEW1VEV");
 //Retorna o json que foi obtido pela consulta a API
     return json.decode(response.body);
   }
@@ -119,16 +119,16 @@ class _MensalState extends State<Mensal> {
                         default:
                           //Realiza calculos altes de colocar na UI
                           _abertura = double.parse(
-                              snapshot.data["Time Series (Daily)"]["2019-12-06"]
+                              snapshot.data["Monthly Time Series"]["2019-12-29"]
                                   ["1. open"]);
                           _alta = double.parse(
-                              snapshot.data["Time Series (Daily)"]["2019-12-06"]
+                              snapshot.data["Monthly Time Series"]["2019-12-29"]
                                   ["2. high"]);
                           _baixa = double.parse(
-                              snapshot.data["Time Series (Daily)"]["2019-12-06"]
+                              snapshot.data["Monthly Time Series"]["2019-12-29"]
                                   ["3. low"]);
                           _fechamento = double.parse(
-                              snapshot.data["Time Series (Daily)"]["2019-12-06"]
+                              snapshot.data["Monthly Time Series"]["2019-12-29"]
                                   ["4. close"]);
                           _variacao = _getVariacao(_abertura, _fechamento);
 
