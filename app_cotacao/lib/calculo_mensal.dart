@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'package:app_cotacao/widget_search.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class Mensal extends StatefulWidget {
   @override
@@ -8,24 +10,24 @@ class Mensal extends StatefulWidget {
 }
 
 class _MensalState extends State<Mensal> {
-  String _search;
+  String search;
   double _variacao;
   double _abertura;
   double _fechamento;
   double _alta;
   double _baixa;
-  DateTime _dateTime;
+  DateTime _dateTime = new DateTime.now();
 
   Future<Map> _getStockPrice() async {
     http.Response response;
-    if (_search == null || _search.isEmpty)
+    if (search == null || search.isEmpty)
 //Por padrão busca índice bovespa: ^BVSP
       response = await http.get(
           "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=^BVSP&apikey=DS2B6XU5GXEW1VEV");
     else
 //Retorna o valor da ação a ser buscada, essa ação estará armazenada na variável _search
       response = await http.get(
-          "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=$_search.SAO&apikey=DS2B6XU5GXEW1VEV");
+          "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=$search.SAO&apikey=DS2B6XU5GXEW1VEV");
 //Retorna o json que foi obtido pela consulta a API
     return json.decode(response.body);
   }
@@ -45,6 +47,7 @@ class _MensalState extends State<Mensal> {
 
   @override
   Widget build(BuildContext context) {
+    String _dataFormatada = new DateFormat("yyyy-MM-dd").format(_dateTime);
     return new Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
@@ -59,7 +62,7 @@ class _MensalState extends State<Mensal> {
                       context: context,
                       initialDate: DateTime.now(),
                       firstDate: DateTime(2000),
-                      lastDate: DateTime(2022))
+                      lastDate: DateTime.now())
                   .then((date) {
                 setState(() {
                   _dateTime = date;
@@ -94,7 +97,7 @@ class _MensalState extends State<Mensal> {
                   textAlign: TextAlign.center,
                   onSubmitted: (text) {
                     setState(() {
-                      _search = text;
+                      search = text;
                     });
                   },
                 ),
@@ -119,22 +122,27 @@ class _MensalState extends State<Mensal> {
                         default:
                           //Realiza calculos altes de colocar na UI
                           _abertura = double.parse(
-                              snapshot.data["Monthly Time Series"]["2019-12-29"]
+                              snapshot.data["Monthly Time Series"][_dataFormatada.toString()]
                                   ["1. open"]);
                           _alta = double.parse(
-                              snapshot.data["Monthly Time Series"]["2019-12-29"]
+                              snapshot.data["Monthly Time Series"][_dataFormatada.toString()]
                                   ["2. high"]);
                           _baixa = double.parse(
-                              snapshot.data["Monthly Time Series"]["2019-12-29"]
+                              snapshot.data["Monthly Time Series"][_dataFormatada.toString()]
                                   ["3. low"]);
                           _fechamento = double.parse(
-                              snapshot.data["Monthly Time Series"]["2019-12-29"]
+                              snapshot.data["Monthly Time Series"][_dataFormatada.toString()]
                                   ["4. close"]);
                           _variacao = _getVariacao(_abertura, _fechamento);
 
                           return Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
+                                Text("Ativo: " + busca(search),
+                                      style: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white)),
                                 Text(_variacao.toStringAsPrecision(3) + "%",
                                     style: TextStyle(
                                         fontSize: 70,

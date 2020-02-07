@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-class Home extends StatefulWidget {
+class Diario extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  _DiarioState createState() => _DiarioState();
 }
 
-class _HomeState extends State<Home> {
+class _DiarioState extends State<Diario> {
+  
   String search;
   double _variacao;
   double _abertura;
@@ -59,11 +60,16 @@ class _HomeState extends State<Home> {
               ),
               onPressed: () {
                 showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime(2022))
-                    .then((date) {
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime.now(),
+                    builder: (BuildContext context, Widget child) {
+                      return Theme(
+                        data: ThemeData.dark(),
+                        child: child,
+                      );
+                    }).then((date) {
                   setState(() {
                     _dateTime = date;
                     print(_dateTime);
@@ -122,21 +128,27 @@ class _HomeState extends State<Home> {
                             ),
                           );
                         default:
-                          //Realiza calculos altes de colocar na UI
-                          _abertura = double.parse(
-                              snapshot.data["Time Series (Daily)"]
-                                  [dataFormatada.toString()]["1. open"]);
-                          _alta = double.parse(
-                              snapshot.data["Time Series (Daily)"]
-                                  [dataFormatada.toString()]["2. high"]);
-                          _baixa = double.parse(
-                              snapshot.data["Time Series (Daily)"]
-                                  [dataFormatada.toString()]["3. low"]);
-                          _fechamento = double.parse(
-                              snapshot.data["Time Series (Daily)"]
-                                  [dataFormatada.toString()]["4. close"]);
-                          _variacao = _getVariacao(_abertura, _fechamento);
-                          if (snapshot.hasData) {
+                          if (snapshot.hasError) {
+                            return Center(
+                              child: Text("Não foi possível obter os dados!",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 30.0),
+                                  textAlign: TextAlign.center),
+                            );
+                          } else {
+                            _abertura = double.parse(
+                                snapshot.data["Time Series (Daily)"]
+                                    [dataFormatada.toString()]["1. open"]);
+                            _alta = double.parse(
+                                snapshot.data["Time Series (Daily)"]
+                                    [dataFormatada.toString()]["2. high"]);
+                            _baixa = double.parse(
+                                snapshot.data["Time Series (Daily)"]
+                                    [dataFormatada.toString()]["3. low"]);
+                            _fechamento = double.parse(
+                                snapshot.data["Time Series (Daily)"]
+                                    [dataFormatada.toString()]["4. close"]);
+                            _variacao = _getVariacao(_abertura, _fechamento);
                             return Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
@@ -175,8 +187,6 @@ class _HomeState extends State<Home> {
                                           fontWeight: FontWeight.bold,
                                           color: Colors.white))
                                 ]);
-                          } else {
-                            Container();
                           }
                       }
                     }))

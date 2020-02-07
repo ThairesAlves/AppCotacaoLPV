@@ -34,7 +34,7 @@ class _NavBarAppState extends State<NavBar> {
         builder: (BuildContext context, AsyncSnapshot<NavBarItem> snapshot) {
           switch (snapshot.data) {
             case NavBarItem.HOME:
-              return Home();
+              return Diario();
             case NavBarItem.SEMANAL:
               return Semanal();
             case NavBarItem.MENSAL:
