@@ -52,7 +52,35 @@ class _SemanalState extends State<Semanal> {
         appBar: AppBar(
           backgroundColor: Colors.black,
           title: Text("Cotação"),
-        ),
+          actions: <Widget>[
+             IconButton(
+                  icon: Icon(
+                    Icons.calendar_today,
+                  ),
+                  onPressed: () {
+                    showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime.now(),
+                        builder: (BuildContext context, Widget child) {
+                          return Theme(
+                            data: ThemeData.dark(),
+                            child: child,
+                          );
+                        }).then((date) {
+                      setState(() {
+                        _dateTime = date;
+                        print(_dateTime);
+                        print(_dataFormatada);
+                      });
+                      // dataFormatada = _dateTime.toString();
+                      // print(dataFormatada);
+                    });
+                  },
+                ),
+              ],
+            ),
         body: new Stack(
           children: <Widget>[
             Image.asset(
@@ -83,34 +111,6 @@ class _SemanalState extends State<Semanal> {
                     },
                   ),
                 ),
-                IconButton(
-                  icon: Icon(
-                    Icons.calendar_today,
-                  ),
-                  onPressed: () {
-                    showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime.now(),
-                        builder: (BuildContext context, Widget child) {
-                          return Theme(
-                            data: ThemeData.dark(),
-                            child: child,
-                          );
-                        }).then((date) {
-                      setState(() {
-                        _dateTime = date;
-                        print(_dateTime);
-                        print(_dataFormatada);
-                      });
-                      // dataFormatada = _dateTime.toString();
-                      // print(dataFormatada);
-                    });
-                  },
-                ),
-              ],
-            ),
             Expanded(
               child: FutureBuilder(
                   future: _getStockPrice(),
