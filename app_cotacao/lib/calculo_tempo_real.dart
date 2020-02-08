@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-class Diario extends StatefulWidget {
+class TempoReal extends StatefulWidget {
   @override
-  _DiarioState createState() => _DiarioState();
+  _TempoRealState createState() => _TempoRealState();
 }
 
-class _DiarioState extends State<Diario> {
+class _TempoRealState extends State<TempoReal> {
   String search;
   double _variacao;
   double _abertura;
@@ -23,11 +23,11 @@ class _DiarioState extends State<Diario> {
     if (search == null || search.isEmpty)
 //Por padrão busca índice bovespa: ^BVSP
       response = await http.get(
-          "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=^BVSP&apikey=DS2B6XU5GXEW1VEV");
+          "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=^BVSP&apikey=DS2B6XU5GXEW1VEV");
     else
 //Retorna o valor da ação a ser buscada, essa ação estará armazenada na variável _search
       response = await http.get(
-          "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=$search.SAO&apikey=DS2B6XU5GXEW1VEV");
+          "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=$search.SAO&apikey=DS2B6XU5GXEW1VEV");
 //Retorna o json que foi obtido pela consulta a API
     return json.decode(response.body);
   }
@@ -51,37 +51,38 @@ class _DiarioState extends State<Diario> {
     var mediaQuery = MediaQuery.of(context);
     var size = mediaQuery.size;
     return new Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          title: Text("COTAÇÃO DIÁRIA"),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.calendar_today,
-              ),
-              onPressed: () {
-                showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime.now(),
-                    builder: (BuildContext context, Widget child) {
-                      return Theme(
-                        data: ThemeData.dark(),
-                        child: child,
-                      );
-                    }).then((date) {
-                  if (date != null) {
-                    setState(() {
-                      _dateTime = date;
-                    });
-                  }
-                });
-              },
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: Text("COTAÇÃO MENSAL"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.calendar_today,
             ),
-          ],
-        ),
-        body: new Stack(children: <Widget>[
+            onPressed: () {
+              showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime.now(),
+                  builder: (BuildContext context, Widget child) {
+                    return Theme(
+                      data: ThemeData.dark(),
+                      child: child,
+                    );
+                  }).then((date) {
+                if (date != null) {
+                  setState(() {
+                    _dateTime = date;
+                  });
+                }
+              });
+            },
+          ),
+        ],
+      ),
+      body: new Stack(
+        children: <Widget>[
           Image.asset(
             "lib/images/market.jpg",
             fit: BoxFit.cover,
@@ -90,25 +91,26 @@ class _DiarioState extends State<Diario> {
           Padding(
               padding: EdgeInsets.all(20),
               child: Text(
-                "Consultas estão disponíveis para dias utéis",
+                "Consultas Mensais estão disponíveis para todo último dia útil do Mês",
                 style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                     color: Colors.white),
                 textAlign: TextAlign.center,
               )),
-          Column(mainAxisAlignment: MainAxisAlignment.center, children: <
-              Widget>[
-            Padding(
-              padding: EdgeInsets.only(top: 60, left: 10, right: 10),
-              child: TextField(
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(top: 80, left: 10, right: 10, bottom: 20),
+                child: TextField(
                   textCapitalization: TextCapitalization.sentences,
                   decoration: InputDecoration(
-                      labelText: 'Pesquisar Ativo',
+                      labelText: 'Pesquisar Ativo.',
                       hintText: 'Ex.: Bidi4',
                       hintStyle: TextStyle(color: Colors.white),
                       labelStyle: TextStyle(color: Colors.white),
-                      border: OutlineInputBorder(borderSide: BorderSide(color: Colors.white))),
+                      border: OutlineInputBorder()),
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -118,9 +120,10 @@ class _DiarioState extends State<Diario> {
                     setState(() {
                       search = text;
                     });
-                  }),
-            ),
-            Expanded(
+                  },
+                ),
+              ),
+              Expanded(
                 child: FutureBuilder(
                     future: _getStockPrice(),
                     builder: (context, snapshot) {
@@ -138,46 +141,46 @@ class _DiarioState extends State<Diario> {
                             ),
                           );
                         default:
-                          if (snapshot.data["Time Series (Daily)"] == null)
+                          if (snapshot.data["Monthly Time Series"] == null)
                             return Padding(
-                                padding: EdgeInsets.all(20),
+                                padding: EdgeInsets.all(40),
                                 child: Text(
                                   "Não foi possível obter os dados, ativo inválido.",
                                   style: TextStyle(
-                                      fontSize: 20,
+                                      fontSize: 30,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white),
                                   textAlign: TextAlign.center,
                                 ));
-                          if (snapshot.data["Time Series (Daily)"]
+                          if (snapshot.data["Monthly Time Series"]
                                       [_dataFormatada.toString()] ==
                                   null ||
                               snapshot.hasError)
                             return Padding(
-                                padding: EdgeInsets.all(20),
+                                padding: EdgeInsets.all(40),
                                 child: Text(
                                   "Não foi possível obter os dados, data inválida.",
                                   style: TextStyle(
-                                      fontSize: 20,
+                                      fontSize: 30,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white),
                                   textAlign: TextAlign.center,
                                 ));
                           _abertura = double.parse(
-                              snapshot.data["Time Series (Daily)"]
+                              snapshot.data["Monthly Time Series"]
                                   [_dataFormatada.toString()]["1. open"]);
                           _alta = double.parse(
-                              snapshot.data["Time Series (Daily)"]
+                              snapshot.data["Monthly Time Series"]
                                   [_dataFormatada.toString()]["2. high"]);
                           _baixa = double.parse(
-                              snapshot.data["Time Series (Daily)"]
+                              snapshot.data["Monthly Time Series"]
                                   [_dataFormatada.toString()]["3. low"]);
                           _fechamento = double.parse(
-                              snapshot.data["Time Series (Daily)"]
+                              snapshot.data["Monthly Time Series"]
                                   [_dataFormatada.toString()]["4. close"]);
                           _variacao = _getVariacao(_abertura, _fechamento);
                           return ListView(
-                            padding: EdgeInsets.all(40),
+                              padding: EdgeInsets.all(40),
                               children: <Widget>[
                                 Text("Ativo: " + busca(search),
                                     style: TextStyle(
@@ -186,35 +189,39 @@ class _DiarioState extends State<Diario> {
                                         color: Colors.white)),
                                 Text(_variacao.toStringAsPrecision(3) + "%",
                                     style: TextStyle(
-                                        fontSize: 60,
+                                        fontSize: 70,
                                         fontWeight: FontWeight.bold,
                                         color: _variacao > 0
                                             ? Colors.green
                                             : Colors.red)),
                                 Text("Abertura: R\$" + _abertura.toString(),
                                     style: TextStyle(
-                                        fontSize: 24,
+                                        fontSize: 30,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white)),
                                 Text("Alta: R\$" + _alta.toString(),
                                     style: TextStyle(
-                                        fontSize: 24,
+                                        fontSize: 30,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white)),
                                 Text("Baixa: R\$" + _baixa.toString(),
                                     style: TextStyle(
-                                        fontSize: 24,
+                                        fontSize: 30,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white)),
                                 Text("Fechamento: R\$" + _fechamento.toString(),
                                     style: TextStyle(
-                                        fontSize: 24,
+                                        fontSize: 30,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white))
                               ]);
                       }
-                    }))
-          ])
-        ]));
+                    }),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
   }
 }

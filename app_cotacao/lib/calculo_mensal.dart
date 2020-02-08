@@ -48,10 +48,12 @@ class _MensalState extends State<Mensal> {
   @override
   Widget build(BuildContext context) {
     String _dataFormatada = new DateFormat("yyyy-MM-dd").format(_dateTime);
+    var mediaQuery = MediaQuery.of(context);
+    var size = mediaQuery.size;
     return new Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text("Cotação"),
+        title: Text("COTAÇÃO MENSAL"),
         actions: <Widget>[
           IconButton(
             icon: Icon(
@@ -59,16 +61,16 @@ class _MensalState extends State<Mensal> {
             ),
             onPressed: () {
               showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime.now(),
-                      builder: (BuildContext context, Widget child) {
-                      return Theme(
-                        data: ThemeData.dark(),
-                        child: child,
-                      );})
-                  .then((date) {
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime.now(),
+                  builder: (BuildContext context, Widget child) {
+                    return Theme(
+                      data: ThemeData.dark(),
+                      child: child,
+                    );
+                  }).then((date) {
                 if (date != null) {
                   setState(() {
                     _dateTime = date;
@@ -86,15 +88,28 @@ class _MensalState extends State<Mensal> {
             fit: BoxFit.cover,
             height: 1000.0,
           ),
+          Padding(
+              padding: EdgeInsets.all(20),
+              child: Text(
+                "Consultas Mensais estão disponíveis para todo último dia útil do Mês",
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+                textAlign: TextAlign.center,
+              )),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.all(10),
+                padding:
+                    EdgeInsets.only(top: 80, left: 10, right: 10, bottom: 20),
                 child: TextField(
                   textCapitalization: TextCapitalization.sentences,
                   decoration: InputDecoration(
-                      labelText: 'Pesquise Aqui!',
+                      labelText: 'Pesquisar Ativo.',
+                      hintText: 'Ex.: Bidi4',
+                      hintStyle: TextStyle(color: Colors.white),
                       labelStyle: TextStyle(color: Colors.white),
                       border: OutlineInputBorder()),
                   style: TextStyle(
@@ -117,8 +132,8 @@ class _MensalState extends State<Mensal> {
                         case ConnectionState.waiting:
                         case ConnectionState.none:
                           return Container(
-                            width: 200.0,
-                            height: 200.0,
+                            width: size.width / 2,
+                            height: size.height / 2,
                             alignment: Alignment.center,
                             child: CircularProgressIndicator(
                               valueColor:
@@ -127,17 +142,31 @@ class _MensalState extends State<Mensal> {
                             ),
                           );
                         default:
+                          if (snapshot.data["Monthly Time Series"] == null)
+                            return Padding(
+                                padding: EdgeInsets.all(20),
+                                child: Text(
+                                  "Não foi possível obter os dados, ativo inválido.",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                  textAlign: TextAlign.center,
+                                ));
                           if (snapshot.data["Monthly Time Series"]
-                                  [_dataFormatada.toString()] ==
-                              null)
-                            return Padding(padding: EdgeInsets.all(40),
-                            child:
-                            Text("Não foi possível obter os dados, data inválida.",
-                                style: TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
-                                    textAlign: TextAlign.center,));
+                                      [_dataFormatada.toString()] ==
+                                  null ||
+                              snapshot.hasError)
+                            return Padding(
+                                padding: EdgeInsets.all(20),
+                                child: Text(
+                                  "Não foi possível obter os dados, data inválida.",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                  textAlign: TextAlign.center,
+                                ));
                           _abertura = double.parse(
                               snapshot.data["Monthly Time Series"]
                                   [_dataFormatada.toString()]["1. open"]);
@@ -151,9 +180,8 @@ class _MensalState extends State<Mensal> {
                               snapshot.data["Monthly Time Series"]
                                   [_dataFormatada.toString()]["4. close"]);
                           _variacao = _getVariacao(_abertura, _fechamento);
-
-                          return Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                          return ListView(
+                              padding: EdgeInsets.all(40),
                               children: <Widget>[
                                 Text("Ativo: " + busca(search),
                                     style: TextStyle(
@@ -162,29 +190,29 @@ class _MensalState extends State<Mensal> {
                                         color: Colors.white)),
                                 Text(_variacao.toStringAsPrecision(3) + "%",
                                     style: TextStyle(
-                                        fontSize: 70,
+                                        fontSize: 60,
                                         fontWeight: FontWeight.bold,
                                         color: _variacao > 0
                                             ? Colors.green
                                             : Colors.red)),
                                 Text("Abertura: R\$" + _abertura.toString(),
                                     style: TextStyle(
-                                        fontSize: 30,
+                                        fontSize: 24,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white)),
                                 Text("Alta: R\$" + _alta.toString(),
                                     style: TextStyle(
-                                        fontSize: 30,
+                                        fontSize: 24,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white)),
                                 Text("Baixa: R\$" + _baixa.toString(),
                                     style: TextStyle(
-                                        fontSize: 30,
+                                        fontSize: 24,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white)),
                                 Text("Fechamento: R\$" + _fechamento.toString(),
                                     style: TextStyle(
-                                        fontSize: 30,
+                                        fontSize: 24,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white))
                               ]);

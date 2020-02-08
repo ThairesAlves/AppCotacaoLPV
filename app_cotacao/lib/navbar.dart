@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:app_cotacao/calculo_diario.dart';
 import 'package:app_cotacao/calculo_semanal.dart';
 import 'package:app_cotacao/calculo_mensal.dart';
+import 'package:app_cotacao/calculo_tempo_real.dart';
 
 class NavBar extends StatefulWidget {
   createState() => _NavBarAppState();
@@ -39,6 +40,8 @@ class _NavBarAppState extends State<NavBar> {
               return Semanal();
             case NavBarItem.MENSAL:
               return Mensal();
+            case NavBarItem.TEMPO_REAL:
+              return TempoReal();
           }
         },
       ),
@@ -64,6 +67,10 @@ class _NavBarAppState extends State<NavBar> {
               BottomNavigationBarItem(
                 title: Text('Mensal'),
                 icon: Icon(Icons.list),
+              ),
+              BottomNavigationBarItem(
+                title: Text('Tempo Real'),
+                icon: Icon(Icons.query_builder),
               ),
             ],
           );

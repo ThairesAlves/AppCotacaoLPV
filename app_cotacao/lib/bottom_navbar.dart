@@ -1,6 +1,6 @@
 import 'dart:async';
 
-enum NavBarItem { HOME, SEMANAL, MENSAL }
+enum NavBarItem { HOME, SEMANAL, MENSAL, TEMPO_REAL }
 
 class NavBarBloc {
   final StreamController<NavBarItem> _navBarController =
@@ -20,6 +20,9 @@ class NavBarBloc {
         break;
       case 2:
         _navBarController.sink.add(NavBarItem.MENSAL);
+        break;
+      case 3:
+        _navBarController.sink.add(NavBarItem.TEMPO_REAL);
         break;
     }
   }
