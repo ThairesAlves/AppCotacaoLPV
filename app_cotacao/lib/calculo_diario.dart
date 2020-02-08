@@ -10,7 +10,6 @@ class Diario extends StatefulWidget {
 }
 
 class _DiarioState extends State<Diario> {
-  
   String search;
   double _variacao;
   double _abertura;
@@ -70,13 +69,15 @@ class _DiarioState extends State<Diario> {
                         child: child,
                       );
                     }).then((date) {
-                  setState(() {
-                    _dateTime = date;
-                    print(_dateTime);
-                    print(dataFormatada);
-                  });
-                  // dataFormatada = _dateTime.toString();
-                  // print(dataFormatada);
+                  if (date != null) {
+                    setState(() {
+                      _dateTime = date;
+                      print(_dateTime);
+                      print(dataFormatada);
+                    });
+                    // dataFormatada = _dateTime.toString();
+                    // print(dataFormatada);
+                  }
                 });
               },
             ),
@@ -128,69 +129,60 @@ class _DiarioState extends State<Diario> {
                             ),
                           );
                         default:
-                          if (snapshot.hasError) {
-                            return Center(
-                              child: Text("Não foi possível obter os dados!",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 30.0),
-                                  textAlign: TextAlign.center),
-                            );
-                          } else {
-                            _abertura = double.parse(
-                                snapshot.data["Time Series (Daily)"]
-                                    [dataFormatada.toString()]["1. open"]);
-                            _alta = double.parse(
-                                snapshot.data["Time Series (Daily)"]
-                                    [dataFormatada.toString()]["2. high"]);
-                            _baixa = double.parse(
-                                snapshot.data["Time Series (Daily)"]
-                                    [dataFormatada.toString()]["3. low"]);
-                            _fechamento = double.parse(
-                                snapshot.data["Time Series (Daily)"]
-                                    [dataFormatada.toString()]["4. close"]);
-                            _variacao = _getVariacao(_abertura, _fechamento);
-                            return Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(_variacao.toStringAsPrecision(3) + "%",
-                                      style: TextStyle(
-                                          fontSize: 70,
-                                          fontWeight: FontWeight.bold,
-                                          color: _variacao > 0
-                                              ? Colors.green
-                                              : Colors.red)),
-                                  Text("Ativo: " + busca(search),
-                                      style: TextStyle(
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white)),
-                                  Text("Abertura: R\$" + _abertura.toString(),
-                                      style: TextStyle(
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white)),
-                                  Text("Alta: R\$" + _alta.toString(),
-                                      style: TextStyle(
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white)),
-                                  Text("Baixa: R\$" + _baixa.toString(),
-                                      style: TextStyle(
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white)),
-                                  Text(
-                                      "Fechamento: R\$" +
-                                          _fechamento.toString(),
-                                      style: TextStyle(
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white))
-                                ]);
-                          }
-                      }
-                    }))
+                          _abertura = double.parse(
+                              snapshot.data["Time Series (Daily)"]
+                                  [dataFormatada.toString()]["1. open"]);
+                          _alta = double.parse(
+                              snapshot.data["Time Series (Daily)"]
+                                  [dataFormatada.toString()]["2. high"]);
+                          _baixa = double.parse(
+                              snapshot.data["Time Series (Daily)"]
+                                  [dataFormatada.toString()]["3. low"]);
+                          _fechamento = double.parse(
+                              snapshot.data["Time Series (Daily)"]
+                                  [dataFormatada.toString()]["4. close"]);
+                          _variacao = _getVariacao(_abertura, _fechamento);
+                          return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(_variacao.toStringAsPrecision(3) + "%",
+                                    style: TextStyle(
+                                        fontSize: 70,
+                                        fontWeight: FontWeight.bold,
+                                        color: _variacao > 0
+                                            ? Colors.green
+                                            : Colors.red)),
+                                Text("Ativo: " + busca(search),
+                                    style: TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white)),
+                                Text("Abertura: R\$" + _abertura.toString(),
+                                    style: TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white)),
+                                Text("Alta: R\$" + _alta.toString(),
+                                    style: TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white)),
+                                Text("Baixa: R\$" + _baixa.toString(),
+                                    style: TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white)),
+                                Text("Fechamento: R\$" + _fechamento.toString(),
+                                    style: TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white))
+                              ]);
+                      } 
+                    })) 
           ])
+          
         ]));
+        
   }
 }

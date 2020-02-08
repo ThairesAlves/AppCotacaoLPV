@@ -69,13 +69,13 @@ class _SemanalState extends State<Semanal> {
                         child: child,
                       );
                     }).then((date) {
-                  setState(() {
-                    _dateTime = date;
-                    print(_dateTime);
-                    print(_dataFormatada);
-                  });
-                  // dataFormatada = _dateTime.toString();
-                  // print(dataFormatada);
+                  if (date != null) {
+                    setState(() {
+                      _dateTime = date;
+                      print(_dateTime);
+                      print(_dataFormatada);
+                    });
+                  }
                 });
               },
             ),

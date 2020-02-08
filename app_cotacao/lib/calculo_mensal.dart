@@ -64,9 +64,11 @@ class _MensalState extends State<Mensal> {
                       firstDate: DateTime(2000),
                       lastDate: DateTime.now())
                   .then((date) {
-                setState(() {
-                  _dateTime = date;
-                });
+                if (date != null) {
+                  setState(() {
+                    _dateTime = date;
+                  });
+                }
               });
             },
           ),
@@ -122,27 +124,27 @@ class _MensalState extends State<Mensal> {
                         default:
                           //Realiza calculos altes de colocar na UI
                           _abertura = double.parse(
-                              snapshot.data["Monthly Time Series"][_dataFormatada.toString()]
-                                  ["1. open"]);
+                              snapshot.data["Monthly Time Series"]
+                                  [_dataFormatada.toString()]["1. open"]);
                           _alta = double.parse(
-                              snapshot.data["Monthly Time Series"][_dataFormatada.toString()]
-                                  ["2. high"]);
+                              snapshot.data["Monthly Time Series"]
+                                  [_dataFormatada.toString()]["2. high"]);
                           _baixa = double.parse(
-                              snapshot.data["Monthly Time Series"][_dataFormatada.toString()]
-                                  ["3. low"]);
+                              snapshot.data["Monthly Time Series"]
+                                  [_dataFormatada.toString()]["3. low"]);
                           _fechamento = double.parse(
-                              snapshot.data["Monthly Time Series"][_dataFormatada.toString()]
-                                  ["4. close"]);
+                              snapshot.data["Monthly Time Series"]
+                                  [_dataFormatada.toString()]["4. close"]);
                           _variacao = _getVariacao(_abertura, _fechamento);
 
                           return Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text("Ativo: " + busca(search),
-                                      style: TextStyle(
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white)),
+                                    style: TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white)),
                                 Text(_variacao.toStringAsPrecision(3) + "%",
                                     style: TextStyle(
                                         fontSize: 70,
