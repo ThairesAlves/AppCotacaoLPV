@@ -17,17 +17,18 @@ class _TempoRealState extends State<TempoReal> {
   double _alta;
   double _baixa;
   DateTime _dateTime = new DateTime.now();
+  TimeOfDay _horas = new TimeOfDay.now();
 
   Future<Map> _getStockPrice() async {
     http.Response response;
     if (search == null || search.isEmpty)
 //Por padrão busca índice bovespa: ^BVSP
       response = await http.get(
-          "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=^BVSP&apikey=DS2B6XU5GXEW1VEV");
+          "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=^BVSP&interval=5min&apikey=DS2B6XU5GXEW1VEV");
     else
 //Retorna o valor da ação a ser buscada, essa ação estará armazenada na variável _search
       response = await http.get(
-          "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=$search.SAO&apikey=DS2B6XU5GXEW1VEV");
+          "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=$search.SAO&interval=5min&apikey=DS2B6XU5GXEW1VEV");
 //Retorna o json que foi obtido pela consulta a API
     return json.decode(response.body);
   }
@@ -79,6 +80,28 @@ class _TempoRealState extends State<TempoReal> {
               });
             },
           ),
+          IconButton(
+            icon: Icon(
+              Icons.access_time,
+            ),
+            onPressed: () {
+              showTimePicker(
+                  context: context,
+                  initialTime: TimeOfDay.now(),
+                  builder: (BuildContext context, Widget child) {
+                    return Theme(
+                      data: ThemeData.dark(),
+                      child: child,
+                    );
+                  }).then((date) {
+                if (date != null) {
+                  setState(() {
+                    _horas = date;
+                  });
+                }
+              });
+            },
+          ),
         ],
       ),
       body: new Stack(
@@ -91,7 +114,7 @@ class _TempoRealState extends State<TempoReal> {
           Padding(
               padding: EdgeInsets.all(20),
               child: Text(
-                "Consultas Mensais estão disponíveis para todo último dia útil do Mês",
+                "Consultas em tempo real estão disponíveis para todo dia útil a cada 5 minutos, considere que é necessário que o último número deve ser 0 ou 5",
                 style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
@@ -102,7 +125,8 @@ class _TempoRealState extends State<TempoReal> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(top: 80, left: 10, right: 10, bottom: 20),
+                padding:
+                    EdgeInsets.only(top: 80, left: 10, right: 10, bottom: 20),
                 child: TextField(
                   textCapitalization: TextCapitalization.sentences,
                   decoration: InputDecoration(
@@ -110,7 +134,8 @@ class _TempoRealState extends State<TempoReal> {
                       hintText: 'Ex.: Bidi4',
                       hintStyle: TextStyle(color: Colors.white),
                       labelStyle: TextStyle(color: Colors.white),
-                      border: OutlineInputBorder()),
+                      border: new OutlineInputBorder(
+                          borderSide: new BorderSide(color: Colors.white))),
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
