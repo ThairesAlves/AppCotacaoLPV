@@ -128,7 +128,17 @@ class _SemanalState extends State<Semanal> {
                             ),
                           );
                         default:
-                          //Realiza calculos altes de colocar na UI
+                          if (snapshot.data["Weekly Time Series"]
+                                  [_dataFormatada.toString()] ==
+                              null)
+                            return Padding(padding: EdgeInsets.all(40),
+                            child:
+                            Text("Não foi possível obter os dados, data inválida.",
+                                style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                                    textAlign: TextAlign.center,));
                           _abertura = double.parse(
                               snapshot.data["Weekly Time Series"]
                                   [_dataFormatada.toString()]["1. open"]);

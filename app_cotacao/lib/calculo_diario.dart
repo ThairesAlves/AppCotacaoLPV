@@ -47,7 +47,7 @@ class _DiarioState extends State<Diario> {
 
   @override
   Widget build(BuildContext context) {
-    String dataFormatada = new DateFormat("yyyy-MM-dd").format(_dateTime);
+    String _dataFormatada = new DateFormat("yyyy-MM-dd").format(_dateTime);
     return new Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,
@@ -72,11 +72,7 @@ class _DiarioState extends State<Diario> {
                   if (date != null) {
                     setState(() {
                       _dateTime = date;
-                      print(_dateTime);
-                      print(dataFormatada);
                     });
-                    // dataFormatada = _dateTime.toString();
-                    // print(dataFormatada);
                   }
                 });
               },
@@ -129,18 +125,29 @@ class _DiarioState extends State<Diario> {
                             ),
                           );
                         default:
+                          if (snapshot.data["Time Series (Daily)"]
+                                  [_dataFormatada.toString()] ==
+                              null)
+                            return Padding(padding: EdgeInsets.all(40),
+                            child:
+                            Text("Não foi possível obter os dados, data inválida.",
+                                style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                                    textAlign: TextAlign.center,));
                           _abertura = double.parse(
                               snapshot.data["Time Series (Daily)"]
-                                  [dataFormatada.toString()]["1. open"]);
+                                  [_dataFormatada.toString()]["1. open"]);
                           _alta = double.parse(
                               snapshot.data["Time Series (Daily)"]
-                                  [dataFormatada.toString()]["2. high"]);
+                                  [_dataFormatada.toString()]["2. high"]);
                           _baixa = double.parse(
                               snapshot.data["Time Series (Daily)"]
-                                  [dataFormatada.toString()]["3. low"]);
+                                  [_dataFormatada.toString()]["3. low"]);
                           _fechamento = double.parse(
                               snapshot.data["Time Series (Daily)"]
-                                  [dataFormatada.toString()]["4. close"]);
+                                  [_dataFormatada.toString()]["4. close"]);
                           _variacao = _getVariacao(_abertura, _fechamento);
                           return Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -178,11 +185,9 @@ class _DiarioState extends State<Diario> {
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white))
                               ]);
-                      } 
-                    })) 
+                      }
+                    }))
           ])
-          
         ]));
-        
   }
 }

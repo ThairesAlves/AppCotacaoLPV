@@ -62,7 +62,12 @@ class _MensalState extends State<Mensal> {
                       context: context,
                       initialDate: DateTime.now(),
                       firstDate: DateTime(2000),
-                      lastDate: DateTime.now())
+                      lastDate: DateTime.now(),
+                      builder: (BuildContext context, Widget child) {
+                      return Theme(
+                        data: ThemeData.dark(),
+                        child: child,
+                      );})
                   .then((date) {
                 if (date != null) {
                   setState(() {
@@ -122,7 +127,17 @@ class _MensalState extends State<Mensal> {
                             ),
                           );
                         default:
-                          //Realiza calculos altes de colocar na UI
+                          if (snapshot.data["Monthly Time Series"]
+                                  [_dataFormatada.toString()] ==
+                              null)
+                            return Padding(padding: EdgeInsets.all(40),
+                            child:
+                            Text("Não foi possível obter os dados, data inválida.",
+                                style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                                    textAlign: TextAlign.center,));
                           _abertura = double.parse(
                               snapshot.data["Monthly Time Series"]
                                   [_dataFormatada.toString()]["1. open"]);
