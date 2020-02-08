@@ -42,6 +42,8 @@ class _NavBarAppState extends State<NavBar> {
               return Mensal();
             case NavBarItem.TEMPO_REAL:
               return TempoReal();
+            default:
+              return Diario();
           }
         },
       ),
