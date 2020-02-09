@@ -49,12 +49,16 @@ class _TempoRealState extends State<TempoReal> {
   @override
   Widget build(BuildContext context) {
     String _dataFormatada = new DateFormat("yyyy-MM-dd").format(_dateTime);
+    String _horaFormatada;
+    String _horaFormatada2;
+    String _horaFormatada3;
+    String _joinDataHora;
     var mediaQuery = MediaQuery.of(context);
     var size = mediaQuery.size;
     return new Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text("COTAÇÃO MENSAL"),
+        title: Text("COTAÇÃO EM TEMPO REAL"),
         actions: <Widget>[
           IconButton(
             icon: Icon(
@@ -73,9 +77,7 @@ class _TempoRealState extends State<TempoReal> {
                     );
                   }).then((date) {
                 if (date != null) {
-                  setState(() {
                     _dateTime = date;
-                  });
                 }
               });
             },
@@ -93,10 +95,22 @@ class _TempoRealState extends State<TempoReal> {
                       data: ThemeData.dark(),
                       child: child,
                     );
-                  }).then((date) {
-                if (date != null) {
+                  }).then((hour) {
+                if (hour != null) {
                   setState(() {
-                    _horas = date;
+                    _horas = hour;
+                    _horaFormatada =
+                        _horas.toString().replaceAll("TimeOfDay", "");
+                    _horaFormatada2 =
+                        _horaFormatada.toString().replaceAll("(", "");
+                    _horaFormatada3 =
+                        _horaFormatada2.toString().replaceAll(")", "");
+                    _joinDataHora = _dataFormatada.toString() +
+                        ' ' +
+                        _horaFormatada3 +
+                        ':00';
+                    print(hour);
+                    print(_joinDataHora);
                   });
                 }
               });
@@ -166,7 +180,7 @@ class _TempoRealState extends State<TempoReal> {
                             ),
                           );
                         default:
-                          if (snapshot.data["Monthly Time Series"] == null)
+                          if (snapshot.data["Time Series (5min)"] == null)
                             return Padding(
                                 padding: EdgeInsets.all(40),
                                 child: Text(
@@ -177,8 +191,8 @@ class _TempoRealState extends State<TempoReal> {
                                       color: Colors.white),
                                   textAlign: TextAlign.center,
                                 ));
-                          if (snapshot.data["Monthly Time Series"]
-                                      [_dataFormatada.toString()] ==
+                          if (snapshot.data["Time Series (5min)"]
+                                      [_joinDataHora.toString()] ==
                                   null ||
                               snapshot.hasError)
                             return Padding(
@@ -192,17 +206,17 @@ class _TempoRealState extends State<TempoReal> {
                                   textAlign: TextAlign.center,
                                 ));
                           _abertura = double.parse(
-                              snapshot.data["Monthly Time Series"]
-                                  [_dataFormatada.toString()]["1. open"]);
+                              snapshot.data["Time Series (5min)"]
+                                  [_joinDataHora.toString()]["1. open"]);
                           _alta = double.parse(
-                              snapshot.data["Monthly Time Series"]
-                                  [_dataFormatada.toString()]["2. high"]);
+                              snapshot.data["Time Series (5min)"]
+                                  [_joinDataHora.toString()]["2. high"]);
                           _baixa = double.parse(
-                              snapshot.data["Monthly Time Series"]
-                                  [_dataFormatada.toString()]["3. low"]);
+                              snapshot.data["Time Series (5min)"]
+                                  [_joinDataHora.toString()]["3. low"]);
                           _fechamento = double.parse(
-                              snapshot.data["Monthly Time Series"]
-                                  [_dataFormatada.toString()]["4. close"]);
+                              snapshot.data["Time Series (5min)"]
+                                  [_joinDataHora.toString()]["4. close"]);
                           _variacao = _getVariacao(_abertura, _fechamento);
                           return ListView(
                               padding: EdgeInsets.all(40),
