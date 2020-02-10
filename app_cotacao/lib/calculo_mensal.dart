@@ -23,11 +23,11 @@ class _MensalState extends State<Mensal> {
     if (search == null || search.isEmpty)
 //Por padrão busca índice bovespa: ^BVSP
       response = await http.get(
-          "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=^BVSP&apikey=DS2B6XU5GXEW1VEV");
+          "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=^BVSP&apikey=S4GKIM7HXPJLJE2N");
     else
 //Retorna o valor da ação a ser buscada, essa ação estará armazenada na variável _search
       response = await http.get(
-          "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=$search.SAO&apikey=DS2B6XU5GXEW1VEV");
+          "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=$search.SAO&apikey=S4GKIM7HXPJLJE2N");
 //Retorna o json que foi obtido pela consulta a API
     return json.decode(response.body);
   }
@@ -107,7 +107,7 @@ class _MensalState extends State<Mensal> {
                 child: TextField(
                   textCapitalization: TextCapitalization.sentences,
                   decoration: InputDecoration(
-                      labelText: 'Pesquisar Ativo.',
+                      labelText: 'Pesquisar Ativo',
                       hintText: 'Ex.: Bidi4',
                       hintStyle: TextStyle(color: Colors.white),
                       labelStyle: TextStyle(color: Colors.white),
