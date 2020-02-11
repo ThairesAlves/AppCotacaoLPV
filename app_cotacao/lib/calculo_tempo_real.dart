@@ -18,6 +18,7 @@ class _TempoRealState extends State<TempoReal> {
   double _baixa;
   DateTime _dateTime = new DateTime.now();
   TimeOfDay _horas = new TimeOfDay.now();
+  String _joinDataHora;
 
   Future<Map> _getStockPrice() async {
     http.Response response;
@@ -52,7 +53,6 @@ class _TempoRealState extends State<TempoReal> {
     String _horaFormatada;
     String _horaFormatada2;
     String _horaFormatada3;
-    String _joinDataHora;
     var mediaQuery = MediaQuery.of(context);
     var size = mediaQuery.size;
     return new Scaffold(
